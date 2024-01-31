@@ -1,4 +1,4 @@
-# foodHub-backend
+# BearFood Backend
 Restful APIs for Food Delivery application developed using Nodejs &amp; Express
 
 ## Getting started
