@@ -71,7 +71,7 @@ app.use((error, req, res, next) => {
 
 const clients = {};
 
-mongoose.connect('mongodb+srv://glebanyacom:nh27EhEP1xLa3bwy@cluster0.zbffnf5.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://glebanyacom:nh27EhEP1xLa3bwy@cluster0.zbffnf5.mongodb.net/?retryWrites=true&w=majority')
   .then((result) => {
     console.log("Connected to db");
     const server = app.listen(5000);
