@@ -71,28 +71,51 @@ app.use((error, req, res, next) => {
 
 const clients = {};
 
-mongoose.connect('mongodb+srv://glebanyacom:nh27EhEP1xLa3bwy@cluster0.zbffnf5.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) => {
-    console.log("Connected to db");
-    const server = app.listen(5000);
-    const io = require("./util/socket").init(server);
-    io.on("connection", (socket) => {
-      socket.on("add-user", (data) => {
-        clients[data.userId] = {
-          socket: socket.id,
-        };
-      });
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://glebanyacom:nh27EhEP1xLa3bwy@cluster0.zbffnf5.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
 
-      socket.on("disconnect", () => {
-        for (const userId in clients) {
-          if (clients[userId].socket === socket.id) {
-            delete clients[userId];
-            break;
-          }
-        }
-      });
-    });
-  })
-  .catch((err) => console.log(err));
+// mongoose.connect('mongodb+srv://glebanyacom:nh27EhEP1xLa3bwy@cluster0.zbffnf5.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+  // .then((result) => {
+  //   console.log("Connected to db");
+  //   const server = app.listen(5000);
+  //   const io = require("./util/socket").init(server);
+  //   io.on("connection", (socket) => {
+  //     socket.on("add-user", (data) => {
+  //       clients[data.userId] = {
+  //         socket: socket.id,
+  //       };
+  //     });
+
+  //     socket.on("disconnect", () => {
+  //       for (const userId in clients) {
+  //         if (clients[userId].socket === socket.id) {
+  //           delete clients[userId];
+  //           break;
+  //         }
+  //       }
+  //     });
+  //   });
+  // })
+  // .catch((err) => console.log(err));
 
 exports.clients = clients;
